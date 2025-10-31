@@ -1,0 +1,36 @@
+# Render Blueprint for Data Profiler
+# This file allows one-click deployment on Render.com
+
+services:
+  # Backend Service
+  - type: web
+    name: data-profiler-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    rootDir: backend
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.4
+      - key: PORT
+        generateValue: true
+    healthCheckPath: /
+
+  # Frontend Service
+  - type: web
+    name: data-profiler-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    rootDir: frontend
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: data-profiler-backend
+          property: host
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
