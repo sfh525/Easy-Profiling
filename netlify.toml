@@ -9,6 +9,9 @@
   
   # Base directory (optional, but helps Netlify find your frontend)
   base = "frontend"
+  
+  # Disable functions (we don't use Netlify Functions)
+  functions = ""
 
 # Redirect all requests to index.html for SPA routing
 [[redirects]]
